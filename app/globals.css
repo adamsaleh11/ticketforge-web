@@ -1,0 +1,72 @@
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-mono:
+      "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --background: #0a0e27;
+    --foreground: #e4e6f1;
+    --card: rgb(255 255 255 / 0.05);
+    --card-foreground: #e4e6f1;
+    --popover: #111632;
+    --popover-foreground: #e4e6f1;
+    --primary: #8b5cf6;
+    --primary-foreground: #ffffff;
+    --secondary: #1a1f3a;
+    --secondary-foreground: #e4e6f1;
+    --muted: #1a1f3a;
+    --muted-foreground: #a9aec8;
+    --accent: #c084fc;
+    --accent-foreground: #12091f;
+    --destructive: #f87171;
+    --destructive-foreground: #ffffff;
+    --border: rgb(139 92 246 / 0.2);
+    --input: rgb(255 255 255 / 0.12);
+    --ring: #c084fc;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+    outline-color: rgb(192 132 252 / 0.5);
+  }
+
+  html {
+    min-height: 100%;
+    background: #000000;
+  }
+
+  body {
+    min-height: 100%;
+    color: var(--foreground);
+    background: #000000;
+    font-family: var(--font-mono);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .glass-card {
+    @apply border border-white/10 bg-white/5 backdrop-blur-md;
+  }
+
+  .violet-glow {
+    box-shadow: 0 0 30px rgb(139 92 246 / 0.5);
+  }
+}
