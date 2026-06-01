@@ -1,18 +1,32 @@
 import axios from "axios";
-import { clearStoredAuth, getStoredAuthToken } from "@/stores/auth-store";
+import { createClient } from "@/lib/supabase/client";
+
+function buildApiBaseUrl() {
+  const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+  const baseUrl = rawBaseUrl.replace(/\/+$/, "");
+
+  return baseUrl.endsWith("/api/v1") ? baseUrl : `${baseUrl}/api/v1`;
+}
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001",
+  baseURL: buildApiBaseUrl(),
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-api.interceptors.request.use((config) => {
-  const token = getStoredAuthToken();
+api.interceptors.request.use(async (config) => {
+  if (typeof window === "undefined") {
+    return config;
+  }
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session?.access_token) {
+    config.headers.Authorization = `Bearer ${session.access_token}`;
   }
 
   return config;
@@ -20,13 +34,14 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (
       axios.isAxiosError(error) &&
       error.response?.status === 401 &&
       typeof window !== "undefined"
     ) {
-      clearStoredAuth();
+      const supabase = createClient();
+      await supabase.auth.signOut();
 
       if (window.location.pathname !== "/login") {
         window.location.assign("/login");
