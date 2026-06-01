@@ -1,4 +1,4 @@
-import { ProtectedPageShell } from "@/components/shared/protected-page-shell";
+import { ProjectDetailClient } from "@/components/features/projects/project-detail-client";
 
 type ProjectPageProps = {
   params: {
@@ -7,11 +7,5 @@ type ProjectPageProps = {
 };
 
 export default function ProjectPage({ params }: ProjectPageProps) {
-  return (
-    <ProtectedPageShell
-      description={`Project ${params.id} will load through authenticated API calls in the project workflow slice.`}
-      eyebrow="Project"
-      title="Protected project workspace"
-    />
-  );
+  return <ProjectDetailClient projectId={params.id} />;
 }

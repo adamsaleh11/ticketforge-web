@@ -1,9 +1,14 @@
 import axios from "axios";
+import { toast } from "@/hooks/use-toast";
 import { createClient } from "@/lib/supabase/client";
 
 declare module "axios" {
   export interface AxiosRequestConfig {
     skipAuthRedirectOn401?: boolean;
+  }
+
+  export interface AxiosError {
+    apiErrorToastShown?: boolean;
   }
 }
 
@@ -41,11 +46,13 @@ api.interceptors.request.use(async (config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    if (!axios.isAxiosError(error) || typeof window === "undefined") {
+      return Promise.reject(error);
+    }
+
     if (
-      axios.isAxiosError(error) &&
       error.response?.status === 401 &&
-      !error.config?.skipAuthRedirectOn401 &&
-      typeof window !== "undefined"
+      !error.config?.skipAuthRedirectOn401
     ) {
       const supabase = createClient();
       await supabase.auth.signOut();
@@ -53,6 +60,22 @@ api.interceptors.response.use(
       if (window.location.pathname !== "/login") {
         window.location.assign("/login");
       }
+
+      return Promise.reject(error);
+    }
+
+    if (error.response && error.response.status >= 500) {
+      error.apiErrorToastShown = true;
+      toast({
+        title: "Server error, try again",
+        variant: "destructive",
+      });
+    } else if (!error.response) {
+      error.apiErrorToastShown = true;
+      toast({
+        title: "Network error, check your connection",
+        variant: "destructive",
+      });
     }
 
     return Promise.reject(error);

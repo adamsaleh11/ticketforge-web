@@ -178,6 +178,10 @@ async function testSavedOllamaEndpoint(): Promise<OllamaConnectionResult> {
   return normalizeConnectionResult(response.data);
 }
 
+async function deleteAccount() {
+  await api.delete("/me");
+}
+
 export function getOllamaEndpointValidationMessage(error: unknown) {
   if (!axios.isAxiosError(error)) {
     return null;
@@ -215,5 +219,11 @@ export function useSaveOllamaEndpoint() {
 export function useTestSavedOllamaEndpoint() {
   return useMutation<OllamaConnectionResult, Error>({
     mutationFn: testSavedOllamaEndpoint,
+  });
+}
+
+export function useDeleteAccount() {
+  return useMutation<void, Error>({
+    mutationFn: deleteAccount,
   });
 }

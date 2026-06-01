@@ -4,9 +4,9 @@ import { SettingsClient } from "@/components/features/settings/settings-client";
 export default function SettingsPage() {
   return (
     <ProtectedPageShell
-      description="Configure provider settings for cloud and local model generation."
+      description="Manage your profile, GitHub connection, local Ollama endpoint, and account controls."
       eyebrow="Settings"
-      title="Manage your TicketForge account."
+      title="Manage your TicketForge account"
     >
       <SettingsClient />
     </ProtectedPageShell>
