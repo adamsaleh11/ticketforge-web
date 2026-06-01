@@ -55,6 +55,7 @@ export type CreateProjectVariables = {
   description: string;
   llm_provider: ProjectProvider;
   llm_model: string;
+  github_repo_full_name?: string;
 };
 
 export type CreateProjectResult = {
